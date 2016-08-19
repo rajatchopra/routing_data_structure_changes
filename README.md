@@ -11,7 +11,7 @@ Contents:
 
 ###Short summary of changes
 
-In the older model, the top level has one map of all services, and to get to routes of the system, one has to iterate over all the services and then get to the routes that each service holds.
+In the older model, the top level has one map of all services, and to get to routes of the system, one has to iterate over all the services and then get to the routes that each service holds.  
 In the new model, the top level contains two maps - one for all the routes and one for all the services. Get to any of them now without double iteration.
 
 
@@ -67,9 +67,9 @@ server {{$endpoint.IdHash}} {{$endpoint.IP}}:{{$endpoint.Port}}...
 A service could be part of many routes, so we have two basic structures - 
 ```
 ServiceAliasConfig <-> corresponds to a Route
-ServiceUnit <- corresponds to a Service, but also has one extra field that contains all the ServiceAliasConfigs(routes) that it is part of.
+ServiceUnit <- corresponds to a Service, but also holds how many Routes point to it
 ```
-
+ServiceUnit has one special field that contains all the ServiceAliasConfigs(routes) that it is part of:
 ```
 type ServiceUnit {
  ..
@@ -94,7 +94,8 @@ server {{$endpoint.IdHash}} {{$endpoint.IP}}:{{$endpoint.Port}}
 But with the older model we cannot accommodate the idea that a route can contain multiple services.
 
 ###Upgrade Actions
-If you are upgrading from version 1.2 to version 1.3 of openshift origin but you never changed the default haproxy routing template that came with the image, then nothing much to do. Just ensure that the new router image is used so that you can use the latest features of the release.
+If you are upgrading from version 1.2 to version 1.3 of openshift origin but you never changed the default haproxy routing template that came with the image, then nothing much to do. Just ensure that the new router image is used so that you can use the latest features of the release.  
+  
 If you ever customized your haproxy routing template, then depending on the changes you may want to
   - re apply the changes on the newer template
   - rewrite your existing template using the newer model
