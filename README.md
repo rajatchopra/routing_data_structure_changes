@@ -1,6 +1,6 @@
 # Routing Data Structure Changes
 The underlying data structure that a router template can use has changed in origin release 1.3
-This document explains the changes and possible actions needed if someone is upgrading from origin 1.2 to origin 1.3! Anyone attempting to modify the pre-packaged template will also find the information useful.
+Extra action may be needed for an upgrade from 1.2 to 1.3 release. Please use this document to know how to do the changes to your template.
 
 
 Contents:
@@ -94,12 +94,14 @@ server {{$endpoint.IdHash}} {{$endpoint.IP}}:{{$endpoint.Port}}
 But with the older model we cannot accommodate the idea that a route can contain multiple services.
 
 ###Upgrade Actions
-If you are upgrading from version 1.2 to version 1.3 of openshift origin but you never changed the default haproxy routing template that came with the image, then nothing much to do. Just ensure that the new router image is used so that you can use the latest features of the release.  
+If you are upgrading from version 1.2 to version 1.3 of openshift origin but you never changed the default haproxy routing template that came with the image, then nothing much to do. Just ensure that the new router image is used so that you can use the latest features of the release. Come back to this document if you ever need to change the template.   
   
-If you ever customized your haproxy routing template, then depending on the changes you may want to
-  - re apply the changes on the newer template
+If you ever customized your haproxy routing template then, depending on the changes, you may want to
+  - re apply the changes on the newer template. Or,
   - rewrite your existing template using the newer model
     * Iterating over .State now gives ServiceAliasConfigs and not the ServiceUnits
     * Each ServiceAliasConfig now has multiple ServiceUnits in it stored as keys of a map, where the value of each key is the weight associated with the service
     * To get the actual service object, index over another top level object called 'ServiceUnits'
-    * One cannot directly get the list of routes that a service serves to now. We have found no use of that information. If you use this information for any reason, you will have to construct your own map by iterating over all routes that contain a particular service.
+    * One cannot directly get the list of routes that a service serves to now. We have found no use of that information. If you use this information for any reason, you will have to construct your own map by iterating over all routes that contain a particular service.  
+   
+It is recommended that the new template is taken as a base and the changes/modifications are re-applied on it. Then, rebuild the router image. Same applies if you use configMap to supply the template to the router - you will have to use the new image or rebuild your image anyway because the openshift executable inside the image needs an upgrade too.
